@@ -34,7 +34,7 @@ List::~List()
 {
 	Node* temp = nullptr;
 
-	while(mHead)
+	while(mHead)   // while(mHead != nullptr)
 	{
 		temp = mHead;
 		mHead = mHead->Next;
@@ -49,9 +49,9 @@ int List::GetSize() const
 
 void List::Add(int value)
 {
-	Node* temp = new Node{ nullptr, nullptr, value };
+	Node* temp = new Node{ nullptr, nullptr, value };   // initialize
 	
-	if(mHead)
+	if(mHead)    // if(mhead != nullptr)
 	{
 		temp->Previous = mTail;
 		mTail->Next = temp;
@@ -69,15 +69,15 @@ void List::Insert(int index, int value)
 {
 	Node* temp = new Node{ nullptr, nullptr, value};
 
-	if(index >= 0 && index <= mSize)
+	if(index >= 0 && index <= mSize)    // 0 <= index <= mSize
 	{
-		if(index == 0)
+		if(index == 0)                  // if inserting to the front
 		{
 			temp->Next = mHead;
 			mHead->Previous = temp;
 			mHead = temp;
 		}
-		else if(index == mSize)
+		else if(index == mSize)         // if inserting to the end
 		{
 			temp->Previous = mTail;
 			mTail->Next = temp;
@@ -106,17 +106,17 @@ void List::Insert(int index, int value)
 
 void List::Remove(int index)
 {
-	if(index >= 0 && index < mSize)
+	if(index >= 0 && index < mSize)   // 0 <= index < mSize
 	{
 		Node* temp = nullptr;
 
-		if(index == 0)
+		if(index == 0)                // if removing head
 		{
 			temp = mHead;
 			mHead = mHead->Next;
 			mHead->Previous = nullptr;
 		}
-		else if(index == mSize - 1)
+		else if(index == mSize - 1)   // if removing tail
 		{
 			temp = mTail;
 			mTail = mTail->Previous;
@@ -167,27 +167,27 @@ int main()
 
 	list.Display();
 	list.Remove(0);
-    list.Insert(0, 7);
+	list.Insert(0, 7);
     
-    std::cout << "\nCall Remove(0) && Insert(0, 7)\n";
-    list.Display();
- 
+	std::cout << "\nCall Remove(0) && Insert(0, 7)\n";
+	list.Display();
+
 	list.Remove(2);
-    list.Insert(2, 9);
+	list.Insert(2, 9);
  
-    std::cout << "\nCall Remove(2) && Insert(2, 9)\n";
-    list.Display();
+	std::cout << "\nCall Remove(2) && Insert(2, 9)\n";
+	list.Display();
  
-    list.Remove(4);
-    list.Insert(4, 10);
- 
+	list.Remove(4);
+	list.Insert(4, 10);
+
 	std::cout << "\nCall Remove(4) && Insert(4, 10)\n";
-    list.Display();
+	list.Display();
  
-    list.Remove(3);
-    list.Remove(0);
-    list.Add(7);
+	list.Remove(3);
+	list.Remove(0);
+	list.Add(7);
  
-    std::cout << "\nCall Remove(3) && Remove(0) && Add(7)\n";
-    list.Display();
+	std::cout << "\nCall Remove(3) && Remove(0) && Add(7)\n";
+	list.Display();
 }
