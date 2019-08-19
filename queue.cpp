@@ -21,6 +21,7 @@ public:
 	T Dequeue();
 
 	void Enqueue(T data);
+	void Clear();
 	void Display();
 
 private:
@@ -37,14 +38,7 @@ Queue<T>::Queue() : mHead{nullptr}, mTail{nullptr}, mSize{0}
 template<typename T>
 Queue<T>::~Queue()
 {
-	Node<T>* node = nullptr;
-
-	while(mHead)
-	{
-		node = mHead;
-		mHead = mHead->Next;
-		delete node;
-	}
+	Clear();
 }
 
 template<typename T>
@@ -86,6 +80,19 @@ void Queue<T>::Enqueue(T data)
 	}
 	
 	mTail = node;
+}
+
+template<typename T>
+void Queue<T>::Clear()
+{
+	Node<T>* node = nullptr;
+
+	while(mHead)
+	{
+		node = mHead;
+		mHead = mHead->Next;
+		delete node;
+	}
 }
 
 template<typename T>
