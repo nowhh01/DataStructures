@@ -16,22 +16,22 @@ public:
 	~Queue();
 
 	int GetSize() const;
+	bool IsEmpty() const;
 
 	T Peek();
 	T Dequeue();
-
 	void Enqueue(T data);
 	void Clear();
 	void Display();
 
 private:
-	Node<T>* mHead;
-	Node<T>* mTail;
+	Node<T>* mFront;
+	Node<T>* mRear;
 	int mSize;
 };
 
 template<typename T>
-Queue<T>::Queue() : mHead{nullptr}, mTail{nullptr}, mSize{0}
+Queue<T>::Queue() : mFront{nullptr}, mRear{nullptr}, mSize{0}
 {
 }
 
@@ -48,17 +48,23 @@ int Queue<T>::GetSize() const
 }
 
 template<typename T>
+bool Queue<T>::IsEmpty() const
+{
+	return mFront == nullptr;
+}
+
+template<typename T>
 T Queue<T>::Peek()
 {
-	return mHead->Data;
+	return mFront->Data;
 }
 
 template<typename T>
 T Queue<T>::Dequeue()
 {
-	Node<T>* node = mHead;
+	Node<T>* node = mFront;
 	T data = node->Data;
-	mHead = mHead->Next;
+	mFront = mFront->Next;
 	
 	delete node;
 	return data;
@@ -69,17 +75,17 @@ void Queue<T>::Enqueue(T data)
 {
 	Node<T>* node = new Node<T>{ data, nullptr, nullptr };
 
-	if(mHead)
+	if(mFront)
 	{
-		node->Previous = mTail;
-		mTail->Next = node;
+		node->Previous = mRear;
+		mRear->Next = node;
 	}
 	else
 	{
-		mHead = node;
+		mFront = node;
 	}
 	
-	mTail = node;
+	mRear = node;
 }
 
 template<typename T>
@@ -87,10 +93,10 @@ void Queue<T>::Clear()
 {
 	Node<T>* node = nullptr;
 
-	while(mHead)
+	while(mFront)
 	{
-		node = mHead;
-		mHead = mHead->Next;
+		node = mFront;
+		mFront = mFront->Next;
 		delete node;
 	}
 }
@@ -98,7 +104,7 @@ void Queue<T>::Clear()
 template<typename T>
 void Queue<T>::Display()
 {
-	Node<T>* node = mHead;
+	Node<T>* node = mFront;
 
 	std::cout << "Queue: ";
 
