@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 
+// average: O(n * n)
+// presorted: O(n)
+
 template<typename T>
 void InsertionSort(T data[], int size)
 {
