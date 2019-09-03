@@ -7,7 +7,7 @@
 // comparable to the performance of quicksort
 
 template<typename Comparable>
-void CombSort(const int size, Comparable* outData)   // improved BubbleSort2()
+void CombSort(const int size, Comparable* const outData)   // improved BubbleSort2()
 {
 	int i, j, k;
 	int step{ size };
@@ -106,6 +106,14 @@ void CombSort(std::vector<Comparable>* const outData)  // for std::vector
 			}
 		}
 	}
+}
+
+template<typename T>
+void Swap(T* const outFirst, T* const outSecond)  // same as std::swap()
+{
+	T tmp{ std::move(*outFirst) };
+	*outFirst = std::move(*outSecond);
+	*outSecond = std::move(tmp);
 }
 
 int main()

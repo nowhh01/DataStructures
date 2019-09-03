@@ -6,7 +6,7 @@
 // presorted: O(n)
 
 template<typename Comparable>
-void InsertionSort(int size, Comparable* const outData)  // for fixed array
+void InsertionSort(const int size, Comparable* const outData)  // for fixed array
 {
 	for(int i = 1; i < size; i++)
 	{
@@ -54,6 +54,15 @@ void InsertionSort(std::vector<Comparable>* const outData)  // for std::vector
 	}
 }
 
+template<typename T>
+void Swap(T* const outFirst, T* const outSecond)  // same as std::swap()
+{
+	T temp{ std::move(*outFirst) };
+	*outFirst = std::move(*outSecond);
+	*outSecond = std::move(temp);
+}
+
+/*
 int main()
 {
 	int a1[7]{ 8, 6, 4, 4, 1, 9, 2 };
@@ -81,3 +90,4 @@ int main()
 	}
 	std::cout << '\n';
 }
+*/

@@ -1,18 +1,18 @@
 #include <iostream>
-#include <utility>  // std::swap
+#include <utility>  // std::swap()
 #include <vector>
 
 // O(n * n)
 
-template<typename T>
-void SelectionSort(T data[], int size)
+template<typename Comparable>
+void SelectionSort(const int size, Comparable* const outData)
 {
-	for(int i = 0; i < size-1; i++)
+	for(int i = 0; i < size - 1; i++)
 	{
 		int least = i;
-		for(int j = i+1; j < size; j++)
+		for(int j = i + 1; j < size; j++)
 		{
-			if(data[j] < data[least])
+			if(*(outData + j) < *(outData + least))
 			{
 				least = j;
 			}
@@ -20,57 +20,57 @@ void SelectionSort(T data[], int size)
 
 		if(i != least)  // if the elements in data are large compound entities such as arrays or structures
 		{               // then one swap may take much time so using a conditional swap() is recommended.
-			std::swap(data[least], data[i]);
+			std::swap(*(outData + least), *(outData + i));
 		}
 	}
 }
 
-template<typename T>
-void SelectionSort(std::vector<T>& data)
+template<typename Comparable>
+void SelectionSort(std::vector<Comparable>* outData)
 {
-	int size{ (int)data.size() };
-	for(int i = 0; i < size; i++)
+	size_t size{ outData->size() };
+	for(size_t i = 0; i < size; i++)
 	{
-		int least = i;
-		for(int j = i+1; j < size; j++)
+		size_t least = i;
+		for(size_t j = i + 1; j < size; j++)
 		{
-			if(data[j] < data[least])
+			if(outData->at(j) < outData->at(least))
 			{
 				least = j;
 			}
 		}
 
-		if(i != least)  // if the elements in data are large compound entities such as arrays or structures
-		{               // then one swap may take much time so using a conditional swap() is recommended.
-			std::swap(data[least], data[i]);
+		if(i != least)
+		{
+			std::swap(outData->at(least), outData->at(i));
 		}
 	}
 }
 
 template<typename T>
-void Swap(T& a, T&b)   // same as std::swap()
+void Swap(T* const outFirst, T* const outSecond)   // same as std::swap()
 {
-	T c{ std::move(a) };
-	a = std::move(b);
-	b = std::move(c);
+	T tmp{ std::move(*outFirst) };
+	*outFirst = std::move(*outSecond);
+	*outSecond = std::move(tmp);
 }
 
 int main()
 {	
 	int a1[7]{ 8, 6, 4, 4, 1, 9, 2 };
-	SelectionSort(a1, 7);
+	SelectionSort(7, a1);
 	std::vector<int> a2{ 5, 3, 1, 2, 9, 8, 7 };
-	SelectionSort(a2);
+	SelectionSort(&a2);
 
-	for(int i = 0; i < 7; i++)
+	for(const auto& x : a1)
 	{
-		std::cout << a1[i] << ' ';
+		std::cout << x << ' ';
 	}
 	std::cout << '\n';
 
-	for(int i = 0; i < 7; i++)
+	for(const auto& x : a2)
 	{
-		std::cout << a2[i] << ' ';
+		std::cout << x << ' ';
 	}
 	std::cout << '\n';
 }

@@ -39,7 +39,7 @@ void BubbleSort2(const int size, Comparable* const outData)  // better
 }
 
 template<typename Comparable, size_t N>
-void BubbleSort(std::array<Comparable, N>* const outData)
+void BubbleSort(std::array<Comparable, N>* const outData)  // for std::array
 {
 	bool again{ true };
 	for(size_t i = 0; i < N - 1 && again; i++)
@@ -57,7 +57,7 @@ void BubbleSort(std::array<Comparable, N>* const outData)
 }
 
 template<typename Comparable>
-void BubbleSort(std::vector<Comparable>* const outData)
+void BubbleSort(std::vector<Comparable>* const outData) // for std::vector
 {
 	size_t size = outData->size();
 	bool again{ true };
@@ -74,6 +74,14 @@ void BubbleSort(std::vector<Comparable>* const outData)
 			}
 		}
 	}
+}
+
+template<typename T>
+void Swap(T* const outFirst, T* const outSecond)   // same as std::swap()
+{
+	T tmp{ std::move(*outFirst) };
+	*outFirst = std::move(*outSecond);
+	*outSecond = std::move(tmp);
 }
 
 int main()
