@@ -1,11 +1,48 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-#include "insertion_sort.cpp"
 
 // best: O(n log n)
 // average: O(n log n)
 // worst: O(n * n)
+
+template<typename Comparable>
+void QuickSort1(const int left, const int right, std::vector<Comparable>* const outData)
+{
+	if(right > left)
+	{
+		const Comparable pivot = std::move(outData->at(left));
+
+		// begin partitioning
+		int i{ left + 1 };
+		int j{ right };
+
+		for( ; ; )
+		{
+			while(i < right && outData->at(i) < pivot) 
+			{
+				i++;
+			}
+			while(i > left && pivot < outData->at(j))
+			{
+				j--;
+			}
+
+			if(i < j)
+			{
+				std::swap(outData->at(i), outData->at(j));
+			}
+			else
+			{
+				std::swap(outData->at(j), outData->at(left));
+				break;
+			}
+		}
+
+		QuickSort1(left, j - 1, outData);
+		QuickSort1(j + 1, right, outData);
+	}
+}
 
 /*
    return median of left, center and right.
@@ -37,32 +74,19 @@ const Comparable& GetMedian(const int left, const int right, std::vector<Compara
 }
 
 template<typename Comparable>
-void QuickSort1(const int left, const int right, std::vector<Comparable>* const outData)
+void InsertionSort(const int left, const int right, std::vector<Comparable>* const outData)
 {
-	const Comparable& pivot = GetMedian(left, right, outData);
-
-	// begin partitioning
-	int i{ left };
-	int j{ right - 1 };
-
-	for( ; ; )
+	for(int i = left + 1; i < right + 1; i++)
 	{
-		while(outData->at(++i) < pivot) { }
-		while(pivot < outData->at(--j)) { }
+		Comparable tmp = std::move(outData->at(i));
 
-		if(i < j)
+		int j;
+		for(j = i; j > 0 && tmp < outData->at(j - 1); j--)
 		{
-			std::swap(outData->at(i), outData->at(j));
+			outData->at(j) = std::move(outData->at(j- 1));
 		}
-		else
-		{
-			std::swap(outData->at(i), outData->at(right - 1));
-			break;
-		}
+		outData->at(j) = std::move(tmp);
 	}
-
-	QuickSort1(left, i - 1, outData);
-	QuickSort1(i + 1, right - 1, outData);
 }
 
 /*
@@ -91,28 +115,28 @@ void QuickSort2(const int left, const int right, std::vector<Comparable>* const 
 			}
 			else
 			{
+				std::swap(outData->at(i), outData->at(right - 1));
 				break;
 			}
 		}
 
-		std::swap(outData->at(i), outData->at(right - 1));
 		QuickSort2(left, i - 1, outData);
 		QuickSort2(i + 1, right, outData);
 	}
 	else // do insertion sort on the subarray
 	{
-		//InsertionSort(left, right, outData);
+		InsertionSort(left, right, outData);
 	}
 }
 
 /*
-	average: O(n)
-	Worst: O(n * n)
-	paces the k-th smallest item in outData[k - 1]
-	k is the desired rank (1 is minimum) in the entire array.
+average: O(n) due to saving a recursive call
+Worst: O(n * n)
+paces the k-th smallest item in outData[k - 1]
+k is the desired rank (1 is minimum) in the entire array.
  */
 template<typename Comparable>
-void QuickSort3(const int left, const int right, const int k, std::vector<Comparable>* const outData)
+void QuickSelect(const int left, const int right, const int k, std::vector<Comparable>* const outData)
 {
 	if(left + 10 <= right)
 	{
@@ -137,35 +161,64 @@ void QuickSort3(const int left, const int right, const int k, std::vector<Compar
 			}
 		}
 
-		if(k <= i)
+		if(k <= i)  // With S1 and S2 based on pivot, the kth smallest element must be in S1
 		{
-			QuickSort3(left, i - 1, k, outData);
+			QuickSelect(left, i - 1, k, outData);
 		}
-		else if(k > i + 1)
+		else if(k > i + 1)  // the kth smallest element lies in S2
 		{
-			QuickSort3(i + 1, right, k, outData);
+			QuickSelect(i + 1, right, k, outData);
 		}
 	}
 	else
 	{
-		InsertSort(left, right, outData);
+		InsertionSort(left, right, outData);
 	}
 }
 
 template<typename Comparable>
-void QuickSort(std::vector<Comparable>* const outData)
+void QuickSort1(std::vector<Comparable>* const outData)
 {
 	QuickSort1(0, outData->size() - 1, outData);
+}
+
+template<typename Comparable>
+void QuickSort2(std::vector<Comparable>* const outData)
+{
+	QuickSort2(0, outData->size() - 1, outData);
+}
+
+template<typename Comparable>
+void QuickSelect(std::vector<Comparable>* const outData)
+{
+	QuickSelect(0, outData->size() - 1, 12, outData);
 }
 
 int main()
 {
 	std::vector<int> a1{ 8, 6, 4, 4, 1, 9, 2, 78, 25, 45, 11, 35 };
-	QuickSort(&a1);
+	std::vector<int> a2{ 8, 6, 4, 4, 1, 9, 2, 78, 25, 45, 11, 35 };
+	std::vector<int> a3{ 8, 6, 4, 4, 1, 9, 2, 78, 25, 45, 11, 35 };
+	QuickSort1(&a1);
+	QuickSort2(&a2);
+	QuickSelect(&a3);
 
 	for(const auto& x : a1)
 	{
 		std::cout << x << ' ';
 	}
 	std::cout << '\n';
+	
+	for(const auto& x : a2)
+	{
+		std::cout << x << ' ';
+	}
+	std::cout << '\n';
+	
+	for(const auto& x : a3)
+	{
+		std::cout << x << ' ';
+	}
+	std::cout << '\n';
+
 }

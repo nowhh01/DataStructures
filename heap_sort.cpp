@@ -2,7 +2,11 @@
 #include <vector>
 #include <array>
 
-inline const int LeftChild(const int i)
+/*
+  O(n log n) 
+ */
+
+inline constexpr int LeftChild(const int i)
 {
 	return 2 * i + 1;
 }

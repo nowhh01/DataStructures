@@ -99,6 +99,9 @@ void Queue<T>::Clear()
 		mFront = mFront->Next;
 		delete node;
 	}
+
+	mFront = nullptr;
+	mRear = nullptr;
 }
 
 template<typename T>
