@@ -2,6 +2,12 @@
 #include <vector>
 #include <utility>
 
+/*
+worst: O(n * n)
+average: depends on gap sequence
+best: O(n log n) 
+ */
+
 template<typename Comparable>
 void ShellSort(std::vector<Comparable>* outData)
 {
