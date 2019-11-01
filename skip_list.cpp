@@ -1,16 +1,12 @@
 #include <iostream>
 
-const int maxLevel = 4;
+constexpr int MAX_LEVEL = 4;
 
 template<class T>
-class SkipListNode
+struct Node
 {
-public:
-	SkipListNode()
-	{
-	}
-	T key;
-	SkipListNode** next;
+	T Key;
+	Node** Next;
 };
 
 template<class T>
@@ -18,48 +14,57 @@ class SkipList
 {
 public:
 	SkipList();
-	bool isEmpty() const;
-	void choosePowers();
-	int chooseLevel();
-	T* skipListSearch(const T&);
-	void skipListInsert(const T&);
+	~SkipList();
+
+	constexpr bool IsEmpty() const;
+	
+	T* SkipListSearch(const T&);
+	int ChooseLevel();
+	
+	void ChoosePowers();
+	void SkipListInsert(const T&);
 
 private:
-	typedef SkipListNode<T> *nodePtr;
-	nodePtr root[maxLevel];
-	int powers[maxLevel];
+	Node<T>* root[MAX_LEVEL];
+	int powers[MAX_LEVEL];
 };
 
 template<class T>
 SkipList<T>::SkipList()
 {
-	for(int i = 0; i < maxLevel; i++)
+	for(int i = 0; i < MAX_LEVEL; i++)
 	{
 		root[i] = 0;
 	}
 }
 
 template<class T>
-bool SkipList<T>::isEmpty() const
+SkipList<T>::~SkipList()
+{
+}
+
+template<class T>
+constexpr bool SkipList<T>::IsEmpty() const
 {
 	return root[0] == 0;
 }
 
 template<class T>
-void SkipList<T>::choosePowers()
+void SkipList<T>::ChoosePowers()
 {
-	powers[maxLevel -1] = (2 << (maxLevel-1)) - 1;   // 2 ^ maxLevel - 1
-	for(int i = maxLevel - 2, j = 0; i >= 0; i--, j++)
+	powers[MAX_LEVEL -1] = (2 << (MAX_LEVEL - 1)) - 1;
+	
+	for(int i = MAX_LEVEL - 2, j = 0; i >= 0; i--, j++)
 	{
-		powers[i] = powers[i + 1] - (2 << j);        // 2 ^ (j + 1)
+		powers[i] = powers[i + 1] - (2 << j);
 	}
 }
 
 template<class T>
-int SkipList<T>::chooseLevel()
+int SkipList<T>::ChooseLevel()
 {
-	int i, r = rand() % powers[maxLevel - 1] + 1;
-	for(i = 1; i < maxLevel; i++)
+	int i, r = rand() % powers[MAX_LEVEL - 1] + 1;
+	for(i = 1; i < MAX_LEVEL; i++)
 	{
 		if(r < powers[i])
 		{
@@ -71,7 +76,7 @@ int SkipList<T>::chooseLevel()
 }
 
 template<class T>
-T* SkipList<T>::skipListSearch(const T& key)
+T* SkipList<T>::SkipListSearch(const T& key)
 {
 	if(isEmpty())
 	{
@@ -79,9 +84,9 @@ T* SkipList<T>::skipListSearch(const T& key)
 	}
 
 	nodePtr previous, current;
-	int level;                // find the highest non-null
+	int level;
 	
-	for(level = maxLevel - 1; level >= 0 && !root[level]; level--)  // level
+	for(level = MAX_LEVEL - 1; level >= 0 && !root[level]; level--)  // find the highest non-null level
 	{
 	}
 
@@ -103,13 +108,13 @@ T* SkipList<T>::skipListSearch(const T& key)
 			{
 				current = root[--level];     // starting from the predecessor which can be the root
 			}
-			else                             // if greater, go to the next non-null node on the same level
-			{                                // or to a list on a list on a lower level;
-				current = *(previous->next + -- level);
+			else
+			{
+				current = *(previous->next + --level);
 			}
 		}
 		else        // if greater, go to the next non-null node on the same level
-		{           // or to a list on a list on a lower level;
+		{           // or to a list on a lower level;
 			previous = current;
 			
 			if(*(current->next + level) != 0)
@@ -136,14 +141,14 @@ T* SkipList<T>::skipListSearch(const T& key)
 }
 
 template<class T>
-void SkipList<T>::skipListInsert(const T& key)
+void SkipList<T>::SkipListInsert(const T& key)
 {
-	nodePtr current[maxLevel], previous[maxLevel], newNode;
+	Node<T>* current[MAX_LEVEL], previous[MAX_LEVEL], newNode;
 	int level, i;
-	current[maxLevel - 1] = root[maxLevel - 1];
-	previous[maxLevel - 1] = 0;
+	current[MAX_LEVEL - 1] = root[MAX_LEVEL - 1];
+	previous[MAX_LEVEL - 1] = 0;
 	
-	for(level = maxLevel - 1; level >= 0; level--)
+	for(level = MAX_LEVEL - 1; level >= 0; level--)
 	{
 		while(current[level] && current[level]->key < key)    // go to the next
 		{
@@ -158,7 +163,7 @@ void SkipList<T>::skipListInsert(const T& key)
 
 		if(level > 0)                                         // go one level down
 		{
-			if(previous[level] == 0)                              // if not the lowest
+			if(previous[level] == 0)                          // if not the lowest
 			{
 				current[level - 1] = root[level - 1];         // level, using a link
 				previous[level - 1] = 0;                      // either from the root
@@ -171,7 +176,7 @@ void SkipList<T>::skipListInsert(const T& key)
 		}
 	}
 
-	level = chooseLevel();                       // generate randomly level for newNode;
+	level = ChooseLevel();                       // generate randomly level for newNode;
 	newNode = new SkipListNode<T>;
 	newNode->next = new nodePtr[sizeof(nodePtr) * (level + 1)];
 	newNode->key = key;
